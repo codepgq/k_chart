@@ -7,6 +7,7 @@ mixin CandleEntity {
 
   List<double>? maValueList;
   List<double>? emaValueList;
+  double? sar;
 
 //  上轨线
   double? up;

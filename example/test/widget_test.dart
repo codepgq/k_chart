@@ -31,8 +31,11 @@ void main() {
   });
 
   testWidgets('Test SAR', (widgetTester) async {
-    List<double> highPrices = [25.10, 25.20, 25.50, 25.70, 25.80, 25.90, 26.00, 26.20, 26.50, 26.80];
-    List<double> lowPrices = [24.50, 24.60, 24.80, 25.00, 25.10, 25.20, 25.30, 25.50, 25.80, 26.10];
+    // List<double> highPrices = [25.10, 25.20, 25.50, 25.70, 25.80, 25.90, 26.00, 26.20, 26.50, 26.80];
+    // List<double> lowPrices = [24.50, 24.60, 24.80, 25.00, 25.10, 25.20, 25.30, 25.50, 25.80, 26.10];
+
+    List<double> highPrices = [27079.25, 27096.64, 27081.45, 25.70, 25.80, 25.90, 26.00, 26.20, 26.50, 26.80];
+    List<double> lowPrices = [27026.97, 27072.17, 27051.11, 25.00, 25.10, 25.20, 25.30, 25.50, 25.80, 26.10];
     double af = 0.02;
     double sar = lowPrices[0];
     double ep = highPrices[0];

@@ -5,6 +5,7 @@ import '../k_chart_widget.dart' show MainState;
 import 'base_chart_renderer.dart';
 
 enum VerticalTextAlignment { left, right }
+
 //For TrendLine
 double? trendLineMax;
 double? trendLineScale;
@@ -40,7 +41,8 @@ class MainRenderer extends BaseChartRenderer<CandleEntity> {
       this.chartColors,
       this.scaleX,
       this.verticalTextAlignment,
-      [this.maDayList = const [5, 10, 20], this.emaDayList = const [5, 10, 20]])
+      [this.maDayList = const [5, 10, 20],
+      this.emaDayList = const [5, 10, 20]])
       : super(
             chartRect: mainRect,
             maxValue: maxValue,
@@ -89,15 +91,14 @@ class MainRenderer extends BaseChartRenderer<CandleEntity> {
         );
         break;
       case MainState.SAR:
-        // TODO: SAR
-        // span = TextSpan(
-        //   children: [
-        //     if (data.sar != 0)
-        //       TextSpan(
-        //           text: "SAR:${format(data.sar)}    ",
-        //           style: getTextStyle(this.chartColors.ma5Color)),
-        //   ],
-        // );
+        span = TextSpan(
+          children: [
+            if (data.sar != 0)
+              TextSpan(
+                  text: "SAR:${format(data.sar)}    ",
+                  style: getTextStyle(this.chartColors.ma5Color)),
+          ],
+        );
         break;
       case MainState.NONE:
         break;
@@ -172,7 +173,7 @@ class MainRenderer extends BaseChartRenderer<CandleEntity> {
           drawEmaLine(lastPoint, curPoint, canvas, lastX, curX);
           break;
         case MainState.SAR:
-          drawSarLine(lastPoint, curPoint, canvas, lastX, curX);
+          drawSarRect(lastPoint, curPoint, canvas, lastX, curX);
           break;
         case MainState.NONE:
           break;
@@ -209,7 +210,10 @@ class MainRenderer extends BaseChartRenderer<CandleEntity> {
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       tileMode: TileMode.clamp,
-      colors: [this.chartColors.lineFillColor, this.chartColors.lineFillInsideColor],
+      colors: [
+        this.chartColors.lineFillColor,
+        this.chartColors.lineFillInsideColor
+      ],
     ).createShader(Rect.fromLTRB(
         chartRect.left, chartRect.top, chartRect.right, chartRect.bottom));
     mLineFillPaint..shader = mLineFillShader;
@@ -260,8 +264,8 @@ class MainRenderer extends BaseChartRenderer<CandleEntity> {
     }
   }
 
-  void drawEmaLine(CandleEntity lastPoint, CandleEntity curPoint,
-      Canvas canvas, double lastX, double curX) {
+  void drawEmaLine(CandleEntity lastPoint, CandleEntity curPoint, Canvas canvas,
+      double lastX, double curX) {
     for (int i = 0; i < (curPoint.emaValueList?.length ?? 0); i++) {
       if (i == 3) {
         break;
@@ -273,21 +277,24 @@ class MainRenderer extends BaseChartRenderer<CandleEntity> {
     }
   }
 
-  void drawSarLine(CandleEntity lastPoint, CandleEntity curPoint,
-      Canvas canvas, double lastX, double curX) {
-    // TODO: draw sar line
-    // if (lastPoint.sar != 0) {
-    //   drawLine(lastPoint.sar, curPoint.sar, canvas, lastX, curX,
-    //       this.chartColors.ma10Color);
-    // }
-    // if (lastPoint.sar != 0) {
-    //   drawLine(lastPoint.sar, curPoint.sar, canvas, lastX, curX,
-    //       this.chartColors.ma5Color);
-    // }
-    // if (lastPoint.sar != 0) {
-    //   drawLine(lastPoint.sar, curPoint.sar, canvas, lastX, curX,
-    //       this.chartColors.ma30Color);
-    // }
+  late Paint sarPaint = Paint()
+    ..color = chartColors.sarColor
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = chartStyle.sarBorderWidth;
+
+  void drawSarRect(CandleEntity lastPoint, CandleEntity curPoint, Canvas canvas,
+      double lastX, double curX) {
+    var size = chartStyle.sarSize;
+    var sar = curPoint.sar;
+    if (sar != null) {
+      sar = getY(sar);
+      var rect = Rect.fromCenter(
+        center: Offset(curX, sar),
+        width: size,
+        height: size,
+      );
+      canvas.drawRect(rect, sarPaint);
+    }
   }
 
   void drawCandle(CandleEntity curPoint, Canvas canvas, double curX) {

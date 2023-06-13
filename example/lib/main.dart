@@ -122,8 +122,8 @@ class _MyHomePageState extends State<MyHomePage> {
               hideGrid: _hideGrid,
               isTapShowInfoDialog: false,
               verticalTextAlignment: _verticalTextAlignment,
-              maDayList: [1, 100, 1000],
-              emaDayList: [1, 100, 1000],
+              maDayList: [7, 14, 28],
+              emaDayList: [7, 14, 28],
             ),
           ),
           if (showLoading)
@@ -268,7 +268,9 @@ class _MyHomePageState extends State<MyHomePage> {
         .reversed
         .toList()
         .cast<KLineEntity>();
-    DataUtil.calculate(datas!);
+    DataUtil.calculate(datas!,
+      maDayList: [7, 14, 28],
+      emaDayList: [7, 14, 28],);
     showLoading = false;
     setState(() {});
   }

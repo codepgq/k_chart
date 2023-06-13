@@ -54,6 +54,8 @@ class ChartColors {
   Color maxColor = Color(0xffffffff);
   Color minColor = Color(0xffffffff);
 
+  Color sarColor = Color(0xFFF0DD35);
+
   Color getMAColor(int index) {
     switch (index % 3) {
       case 1:
@@ -106,6 +108,11 @@ class ChartStyle {
   int gridRows = 4;
 
   int gridColumns = 4;
+
+  /// sar矩形的大小
+  double sarSize = 2;
+  /// sar矩形描边大小
+  double sarBorderWidth = 0.5;
 
   //下方時間客製化
   List<String>? dateTimeFormat;

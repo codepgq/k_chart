@@ -3,13 +3,16 @@ import 'dart:math';
 import '../entity/index.dart';
 
 class DataUtil {
-  static calculate(List<KLineEntity> dataList,
-      [List<int> maDayList = const [5, 10, 20],
-      List<int> emaDayList = const [5, 14, 28],
-      int n = 20,
-      k = 2]) {
+  static calculate(
+    List<KLineEntity> dataList, {
+    List<int> maDayList = const [5, 10, 20],
+    List<int> emaDayList = const [7, 14, 28],
+    int n = 20,
+    k = 2,
+  }) {
     calcMA(dataList, maDayList);
     calcEMA(dataList, emaDayList);
+    calcSAR(dataList);
     calcBOLL(dataList, n, k);
     calcVolumeMA(dataList);
     calcKDJ(dataList);
@@ -80,12 +83,11 @@ class DataUtil {
     // dataList[6].close = 27000.00;
     // dataList[7].close = 26957.25;
 
-
-     // dataList[0].close = 16835.8;
-     // dataList[1].close = 16834.5;
-     // dataList[2].close = 16820.9;
-     // dataList[3].close = 16916.4;
-     // dataList[4].close = 17225.8;
+    // dataList[0].close = 16835.8;
+    // dataList[1].close = 16834.5;
+    // dataList[2].close = 16820.9;
+    // dataList[3].close = 16916.4;
+    // dataList[4].close = 17225.8;
 
     if (dataList.isNotEmpty) {
       var lastEma = List<double>.filled(emaDayList.length, dataList[0].close);
@@ -108,6 +110,53 @@ class DataUtil {
     }
 
     // dataList.sublist(0, 20).forEach((e) => print(e.emaValueList));
+  }
+
+  static calcSAR(List<KLineEntity> dataList) {
+    if (dataList.isEmpty) return;
+    double highPrice = dataList[0].high;
+    double lowPrice = dataList[0].low;
+
+    double af = 0.02;
+    double sar = lowPrice;
+    double ep = highPrice;
+    bool uptrend = true;
+
+    for (int i = 1; i < dataList.length; i++) {
+      highPrice = dataList[i].high;
+      lowPrice = dataList[i].low;
+      if (uptrend) {
+        if (lowPrice < sar) {
+          uptrend = false;
+          sar = ep;
+          ep = highPrice;
+          af = 0.02;
+          dataList[i].sar = sar;
+        } else {
+          sar = sar + af * (ep - sar);
+          if (highPrice > ep) {
+            ep = highPrice;
+            af = af + 0.02 < 0.2 ? af + 0.02 : 0.2;
+          }
+          dataList[i].sar = sar;
+        }
+      } else {
+        if (highPrice > sar) {
+          uptrend = true;
+          sar = ep;
+          ep = lowPrice;
+          af = 0.02;
+          dataList[i].sar = sar;
+        } else {
+          sar = sar - af * (sar - ep);
+          if (lowPrice < ep) {
+            ep = lowPrice;
+            af = af + 0.02 < 0.2 ? af + 0.02 : 0.2;
+          }
+          dataList[i].sar = sar;
+        }
+      }
+    }
   }
 
   static void calcBOLL(List<KLineEntity> dataList, int n, int k) {
