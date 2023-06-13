@@ -4,8 +4,12 @@ import '../entity/index.dart';
 
 class DataUtil {
   static calculate(List<KLineEntity> dataList,
-      [List<int> maDayList = const [5, 10, 20], int n = 20, k = 2]) {
+      [List<int> maDayList = const [5, 10, 20],
+      List<int> emaDayList = const [5, 14, 28],
+      int n = 20,
+      k = 2]) {
     calcMA(dataList, maDayList);
+    calcEMA(dataList, emaDayList);
     calcBOLL(dataList, n, k);
     calcVolumeMA(dataList);
     calcKDJ(dataList);
@@ -16,14 +20,23 @@ class DataUtil {
   }
 
   static calcMA(List<KLineEntity> dataList, List<int> maDayList) {
+    /// 创建长度为3的数组
     List<double> ma = List<double>.filled(maDayList.length, 0);
 
+    /// 元数据不为空
     if (dataList.isNotEmpty) {
+      /// 遍历
       for (int i = 0; i < dataList.length; i++) {
+        /// 得到模型
         KLineEntity entity = dataList[i];
+
+        /// 得到收盘价
         final closePrice = entity.close;
+
+        /// 初始化
         entity.maValueList = List<double>.filled(maDayList.length, 0);
 
+        /// 遍历
         for (int j = 0; j < maDayList.length; j++) {
           ma[j] += closePrice;
           if (i == maDayList[j] - 1) {
@@ -37,6 +50,64 @@ class DataUtil {
         }
       }
     }
+  }
+
+  static calcEMA(List<KLineEntity> dataList, List<int> emaDayList) {
+    double calcEmaValue(double previousEma, double closePrice, int n) {
+      // return previousEma * (n - 1) / (n + 1) + closePrice * 2 / (n + 1);
+      return (closePrice - previousEma) * (2 / (n + 1)) + previousEma;
+      // return closePrice* (2 / (n + 1)) + previousEma * (1 - 2 / (n + 1));
+    }
+
+    // by bit data
+    // dataList[0].close = 26948.36;
+    // dataList[1].close = 26906.76;
+
+    // dataList[0].close = 26921.28;
+    // dataList[1].close = 26927.22;
+    // dataList[2].close = 26917.82;
+    // dataList[3].close = 26935.23;
+    // dataList[4].close = 26960.63;
+    // dataList[5].close = 26948.36;
+    // dataList[6].close = 26906.76; // 26932.52
+    //
+    // dataList[0].close = 26932.76;
+    // dataList[1].close = 26953.59;
+    // dataList[2].close = 26960.01;
+    // dataList[3].close = 26934.47;
+    // dataList[4].close = 26941.16;
+    // dataList[5].close = 26945.12;
+    // dataList[6].close = 27000.00;
+    // dataList[7].close = 26957.25;
+
+
+     // dataList[0].close = 16835.8;
+     // dataList[1].close = 16834.5;
+     // dataList[2].close = 16820.9;
+     // dataList[3].close = 16916.4;
+     // dataList[4].close = 17225.8;
+
+    if (dataList.isNotEmpty) {
+      var lastEma = List<double>.filled(emaDayList.length, dataList[0].close);
+      for (int i = 1; i < dataList.length; i++) {
+        KLineEntity entity = dataList[i];
+        final closePrice = entity.close;
+        entity.emaValueList = List<double>.filled(emaDayList.length, 0);
+
+        var ema0 = calcEmaValue(lastEma[0], closePrice, emaDayList[0]);
+        var ema1 = calcEmaValue(lastEma[1], closePrice, emaDayList[1]);
+        var ema2 = calcEmaValue(lastEma[2], closePrice, emaDayList[2]);
+        // (close price - LastEMA) * (2 / (n + 1)) + LastEMA
+        // if is first, LastEMA is close price
+        entity.emaValueList![0] = i >= emaDayList[0] - 1 ? ema0 : 0;
+        entity.emaValueList![1] = i >= emaDayList[1] - 1 ? ema1 : 0;
+        entity.emaValueList![2] = i >= emaDayList[2] - 1 ? ema2 : 0;
+
+        lastEma = [ema0, ema1, ema2];
+      }
+    }
+
+    // dataList.sublist(0, 20).forEach((e) => print(e.emaValueList));
   }
 
   static void calcBOLL(List<KLineEntity> dataList, int n, int k) {

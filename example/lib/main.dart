@@ -33,10 +33,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<KLineEntity>? datas;
   bool showLoading = true;
-  MainState _mainState = MainState.MA;
+  MainState _mainState = MainState.EMA;
   bool _volHidden = false;
   SecondaryState _secondaryState = SecondaryState.MACD;
-  bool isLine = true;
+  bool isLine = false;
   bool isChinese = true;
   bool _hideGrid = false;
   bool _showNowPrice = true;
@@ -123,6 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
               isTapShowInfoDialog: false,
               verticalTextAlignment: _verticalTextAlignment,
               maDayList: [1, 100, 1000],
+              emaDayList: [1, 100, 1000],
             ),
           ),
           if (showLoading)
@@ -152,6 +153,8 @@ class _MyHomePageState extends State<MyHomePage> {
         button("TrendLine", onPressed: () => _isTrendLine = !_isTrendLine),
         button("Line:MA", onPressed: () => _mainState = MainState.MA),
         button("Line:BOLL", onPressed: () => _mainState = MainState.BOLL),
+        button("Line:EMA", onPressed: () => _mainState = MainState.EMA),
+        button("Line:SAR", onPressed: () => _mainState = MainState.SAR),
         button("Hide Line", onPressed: () => _mainState = MainState.NONE),
         button("Secondary Chart:MACD",
             onPressed: () => _secondaryState = SecondaryState.MACD),

@@ -20,6 +20,7 @@ class MainRenderer extends BaseChartRenderer<CandleEntity> {
   late Rect _contentRect;
   double _contentPadding = 5.0;
   List<int> maDayList;
+  List<int> emaDayList;
   final ChartStyle chartStyle;
   final ChartColors chartColors;
   final double mLineStrokeWidth = 1.0;
@@ -39,7 +40,7 @@ class MainRenderer extends BaseChartRenderer<CandleEntity> {
       this.chartColors,
       this.scaleX,
       this.verticalTextAlignment,
-      [this.maDayList = const [5, 10, 20]])
+      [this.maDayList = const [5, 10, 20], this.emaDayList = const [5, 10, 20]])
       : super(
             chartRect: mainRect,
             maxValue: maxValue,
@@ -70,27 +71,36 @@ class MainRenderer extends BaseChartRenderer<CandleEntity> {
   void drawText(Canvas canvas, CandleEntity data, double x) {
     if (isLine == true) return;
     TextSpan? span;
-    if (state == MainState.MA) {
-      span = TextSpan(
-        children: _createMATextSpan(data),
-      );
-    } else if (state == MainState.BOLL) {
-      span = TextSpan(
-        children: [
-          if (data.up != 0)
-            TextSpan(
-                text: "BOLL:${format(data.mb)}    ",
-                style: getTextStyle(this.chartColors.ma5Color)),
-          if (data.mb != 0)
-            TextSpan(
-                text: "UB:${format(data.up)}    ",
-                style: getTextStyle(this.chartColors.ma10Color)),
-          if (data.dn != 0)
-            TextSpan(
-                text: "LB:${format(data.dn)}    ",
-                style: getTextStyle(this.chartColors.ma30Color)),
-        ],
-      );
+    // support more state text
+    switch (state) {
+      case MainState.MA:
+        span = TextSpan(
+          children: _createMATextSpan(data),
+        );
+        break;
+      case MainState.BOLL:
+        span = TextSpan(
+          children: _createBOLLTextSpan(data),
+        );
+        break;
+      case MainState.EMA:
+        span = TextSpan(
+          children: _createEMATextSpan(data),
+        );
+        break;
+      case MainState.SAR:
+        // TODO: SAR
+        // span = TextSpan(
+        //   children: [
+        //     if (data.sar != 0)
+        //       TextSpan(
+        //           text: "SAR:${format(data.sar)}    ",
+        //           style: getTextStyle(this.chartColors.ma5Color)),
+        //   ],
+        // );
+        break;
+      case MainState.NONE:
+        break;
     }
     if (span == null) return;
     TextPainter tp = TextPainter(text: span, textDirection: TextDirection.ltr);
@@ -111,6 +121,38 @@ class MainRenderer extends BaseChartRenderer<CandleEntity> {
     return result;
   }
 
+  // create boll text span
+  List<InlineSpan> _createBOLLTextSpan(CandleEntity data) {
+    return [
+      if (data.up != 0)
+        TextSpan(
+            text: "BOLL:${format(data.mb)}    ",
+            style: getTextStyle(this.chartColors.ma5Color)),
+      if (data.mb != 0)
+        TextSpan(
+            text: "UB:${format(data.up)}    ",
+            style: getTextStyle(this.chartColors.ma10Color)),
+      if (data.dn != 0)
+        TextSpan(
+            text: "LB:${format(data.dn)}    ",
+            style: getTextStyle(this.chartColors.ma30Color)),
+    ];
+  }
+
+  // create ema text span
+  List<InlineSpan> _createEMATextSpan(CandleEntity data) {
+    List<InlineSpan> result = [];
+    for (int i = 0; i < (data.emaValueList?.length ?? 0); i++) {
+      if (data.emaValueList?[i] != 0) {
+        var item = TextSpan(
+            text: "EMA${emaDayList[i]}:${format(data.emaValueList![i])}    ",
+            style: getTextStyle(this.chartColors.getMAColor(i)));
+        result.add(item);
+      }
+    }
+    return result;
+  }
+
   @override
   void drawChart(CandleEntity lastPoint, CandleEntity curPoint, double lastX,
       double curX, Size size, Canvas canvas) {
@@ -118,10 +160,22 @@ class MainRenderer extends BaseChartRenderer<CandleEntity> {
       drawPolyline(lastPoint.close, curPoint.close, canvas, lastX, curX);
     } else {
       drawCandle(curPoint, canvas, curX);
-      if (state == MainState.MA) {
-        drawMaLine(lastPoint, curPoint, canvas, lastX, curX);
-      } else if (state == MainState.BOLL) {
-        drawBollLine(lastPoint, curPoint, canvas, lastX, curX);
+      // support more state
+      switch (state) {
+        case MainState.MA:
+          drawMaLine(lastPoint, curPoint, canvas, lastX, curX);
+          break;
+        case MainState.BOLL:
+          drawBollLine(lastPoint, curPoint, canvas, lastX, curX);
+          break;
+        case MainState.EMA:
+          drawEmaLine(lastPoint, curPoint, canvas, lastX, curX);
+          break;
+        case MainState.SAR:
+          drawSarLine(lastPoint, curPoint, canvas, lastX, curX);
+          break;
+        case MainState.NONE:
+          break;
       }
     }
   }
@@ -204,6 +258,36 @@ class MainRenderer extends BaseChartRenderer<CandleEntity> {
       drawLine(lastPoint.dn, curPoint.dn, canvas, lastX, curX,
           this.chartColors.ma30Color);
     }
+  }
+
+  void drawEmaLine(CandleEntity lastPoint, CandleEntity curPoint,
+      Canvas canvas, double lastX, double curX) {
+    for (int i = 0; i < (curPoint.emaValueList?.length ?? 0); i++) {
+      if (i == 3) {
+        break;
+      }
+      if (lastPoint.emaValueList?[i] != 0) {
+        drawLine(lastPoint.emaValueList?[i], curPoint.emaValueList?[i], canvas,
+            lastX, curX, this.chartColors.getMAColor(i));
+      }
+    }
+  }
+
+  void drawSarLine(CandleEntity lastPoint, CandleEntity curPoint,
+      Canvas canvas, double lastX, double curX) {
+    // TODO: draw sar line
+    // if (lastPoint.sar != 0) {
+    //   drawLine(lastPoint.sar, curPoint.sar, canvas, lastX, curX,
+    //       this.chartColors.ma10Color);
+    // }
+    // if (lastPoint.sar != 0) {
+    //   drawLine(lastPoint.sar, curPoint.sar, canvas, lastX, curX,
+    //       this.chartColors.ma5Color);
+    // }
+    // if (lastPoint.sar != 0) {
+    //   drawLine(lastPoint.sar, curPoint.sar, canvas, lastX, curX,
+    //       this.chartColors.ma30Color);
+    // }
   }
 
   void drawCandle(CandleEntity curPoint, Canvas canvas, double curX) {

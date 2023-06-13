@@ -5,7 +5,7 @@ import 'package:k_chart/chart_translations.dart';
 import 'package:k_chart/extension/map_ext.dart';
 import 'package:k_chart/flutter_k_chart.dart';
 
-enum MainState { MA, BOLL, NONE }
+enum MainState { MA, BOLL, EMA, SAR, NONE }
 
 enum SecondaryState { MACD, KDJ, RSI, WR, CCI, NONE }
 
@@ -46,6 +46,7 @@ class KChartWidget extends StatefulWidget {
 
   final int fixedLength;
   final List<int> maDayList;
+  final List<int> emaDayList;
   final int flingTime;
   final double flingRatio;
   final Curve flingCurve;
@@ -78,6 +79,7 @@ class KChartWidget extends StatefulWidget {
     this.onLoadMore,
     this.fixedLength = 2,
     this.maDayList = const [5, 10, 20],
+    this.emaDayList = const [5, 10, 20],
     this.flingTime = 600,
     this.flingRatio = 0.5,
     this.flingCurve = Curves.decelerate,
@@ -159,6 +161,7 @@ class _KChartWidgetState extends State<KChartWidget>
       sink: mInfoWindowStream?.sink,
       fixedLength: widget.fixedLength,
       maDayList: widget.maDayList,
+      emaDayList: widget.emaDayList,
       verticalTextAlignment: widget.verticalTextAlignment,
     );
 
