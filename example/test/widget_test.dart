@@ -76,4 +76,31 @@ void main() {
     }
     print('highPrices: ${highPrices.length} ${sarValues.length}\n $sarValues');
   });
+
+  test('test obv', () {
+    List<double> calculateOBV(List<double> closePrices, List<double> volumes) {
+      List<double> obvValues = [volumes[0]];
+      for (int i = 1; i < closePrices.length; i++) {
+        if (closePrices[i] > closePrices[i - 1]) {
+          obvValues.add(obvValues[i - 1] + volumes[i]);
+        } else if (closePrices[i] < closePrices[i - 1]) {
+          obvValues.add(obvValues[i - 1] - volumes[i]);
+        } else {
+          obvValues.add(obvValues[i - 1]);
+        }
+      }
+      return obvValues;
+    }
+
+    var list = calculateOBV([
+      27043.66,
+      27026.04,
+      27068.75,
+      27194.65,
+
+    ], [
+30.2449,13.7230,21.9328,74.3906,
+    ]);//0,-13.72,8.20,82.6
+    print(list);
+  });
 }

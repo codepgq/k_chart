@@ -7,7 +7,7 @@ import 'package:k_chart/flutter_k_chart.dart';
 
 enum MainState { MA, BOLL, EMA, SAR, NONE }
 
-enum SecondaryState { MACD, KDJ, RSI, WR, CCI, NONE }
+enum SecondaryState { MACD, KDJ, RSI, WR, CCI, OBV, NONE }
 
 class TimeFormat {
   static const List<String> YEAR_MONTH_DAY = [yyyy, '-', mm, '-', dd];
@@ -78,8 +78,8 @@ class KChartWidget extends StatefulWidget {
     this.timeFormat = TimeFormat.YEAR_MONTH_DAY,
     this.onLoadMore,
     this.fixedLength = 2,
-    this.maDayList = const [5, 10, 20],
-    this.emaDayList = const [7, 14, 28],
+    this.maDayList = const  [5, 10, 30],
+    this.emaDayList = const [5, 10, 30],
     this.flingTime = 600,
     this.flingRatio = 0.5,
     this.flingCurve = Curves.decelerate,

@@ -1,0 +1,3 @@
+mixin OBVEntity {
+  double? obv;
+}

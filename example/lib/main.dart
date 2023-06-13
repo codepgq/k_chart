@@ -122,8 +122,8 @@ class _MyHomePageState extends State<MyHomePage> {
               hideGrid: _hideGrid,
               isTapShowInfoDialog: false,
               verticalTextAlignment: _verticalTextAlignment,
-              maDayList: [7, 14, 28],
-              emaDayList: [7, 14, 28],
+              maDayList: [5, 10, 30],
+              emaDayList: [5, 10, 30],
             ),
           ),
           if (showLoading)
@@ -166,6 +166,8 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () => _secondaryState = SecondaryState.WR),
         button("Secondary Chart:CCI",
             onPressed: () => _secondaryState = SecondaryState.CCI),
+        button("Secondary Chart:OBV",
+            onPressed: () => _secondaryState = SecondaryState.OBV),
         button("Secondary Chart:Hide",
             onPressed: () => _secondaryState = SecondaryState.NONE),
         button(_volHidden ? "Show Vol" : "Hide Vol",
@@ -230,7 +232,7 @@ class _MyHomePageState extends State<MyHomePage> {
      * 可以翻墙使用方法1加载数据，不可以翻墙使用方法2加载数据，默认使用方法1加载最新数据
      */
     final Future<String> future = getChatDataFromInternet(period);
-    //final Future<String> future = getChatDataFromJson();
+    // final Future<String> future = getChatDataFromJson();
     future.then((String result) {
       solveChatData(result);
     }).catchError((_) {
@@ -243,7 +245,7 @@ class _MyHomePageState extends State<MyHomePage> {
   //获取火币数据，需要翻墙
   Future<String> getChatDataFromInternet(String? period) async {
     var url =
-        'https://api.huobi.br.com/market/history/kline?period=${period ?? '1day'}&size=300&symbol=btcusdt';
+        'https://api.huobi.br.com/market/history/kline?period=${period ?? '1day'}&size=1000&symbol=btcusdt';
     late String result;
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -269,8 +271,8 @@ class _MyHomePageState extends State<MyHomePage> {
         .toList()
         .cast<KLineEntity>();
     DataUtil.calculate(datas!,
-      maDayList: [7, 14, 28],
-      emaDayList: [7, 14, 28],);
+      maDayList:  [5, 10, 30],
+      emaDayList: [5, 10, 30],);
     showLoading = false;
     setState(() {});
   }

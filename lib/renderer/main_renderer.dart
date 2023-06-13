@@ -41,8 +41,8 @@ class MainRenderer extends BaseChartRenderer<CandleEntity> {
       this.chartColors,
       this.scaleX,
       this.verticalTextAlignment,
-      [this.maDayList = const [5, 10, 20],
-      this.emaDayList = const [5, 10, 20]])
+      [this.maDayList = const [5, 10, 30],
+      this.emaDayList = const [5, 10, 30]])
       : super(
             chartRect: mainRect,
             maxValue: maxValue,

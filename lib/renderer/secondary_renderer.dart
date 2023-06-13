@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../entity/macd_entity.dart';
 import '../k_chart_widget.dart' show SecondaryState;
+import '../utils/number_util.dart';
 import 'base_chart_renderer.dart';
 
 class SecondaryRenderer extends BaseChartRenderer<MACDEntity> {
@@ -58,7 +59,11 @@ class SecondaryRenderer extends BaseChartRenderer<MACDEntity> {
         drawLine(lastPoint.cci, curPoint.cci, canvas, lastX, curX,
             this.chartColors.rsiColor);
         break;
-      default:
+      case SecondaryState.OBV:
+        drawLine(lastPoint.obv, curPoint.obv, canvas, lastX, curX,
+            this.chartColors.rsiColor);
+        break;
+      case SecondaryState.NONE:
         break;
     }
   }
@@ -149,7 +154,14 @@ class SecondaryRenderer extends BaseChartRenderer<MACDEntity> {
               style: getTextStyle(this.chartColors.rsiColor)),
         ];
         break;
-      default:
+      case SecondaryState.OBV:
+        children = [
+          TextSpan(
+              text: "OBV:${NumberUtil.format(data.obv!)}    ",
+              style: getTextStyle(this.chartColors.rsiColor)),
+        ];
+        break;
+      case SecondaryState.NONE:
         break;
     }
     TextPainter tp = TextPainter(

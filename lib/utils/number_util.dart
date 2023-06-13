@@ -2,6 +2,9 @@ import 'dart:math';
 
 class NumberUtil {
   static String format(double n) {
+    if (n < 0) {
+      return '-${format(n * -1)}';
+    }
     if (n >= 1000000000) {
       n /= 1000000000;
       return "${n.toStringAsFixed(2)}B";

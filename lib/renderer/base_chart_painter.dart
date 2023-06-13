@@ -255,36 +255,47 @@ abstract class BaseChartPainter extends CustomPainter {
   }
 
   void getSecondaryMaxMinValue(KLineEntity item) {
-    if (secondaryState == SecondaryState.MACD) {
-      if (item.macd != null) {
-        mSecondaryMaxValue =
-            max(mSecondaryMaxValue, max(item.macd!, max(item.dif!, item.dea!)));
-        mSecondaryMinValue =
-            min(mSecondaryMinValue, min(item.macd!, min(item.dif!, item.dea!)));
-      }
-    } else if (secondaryState == SecondaryState.KDJ) {
-      if (item.d != null) {
-        mSecondaryMaxValue =
-            max(mSecondaryMaxValue, max(item.k!, max(item.d!, item.j!)));
-        mSecondaryMinValue =
-            min(mSecondaryMinValue, min(item.k!, min(item.d!, item.j!)));
-      }
-    } else if (secondaryState == SecondaryState.RSI) {
-      if (item.rsi != null) {
-        mSecondaryMaxValue = max(mSecondaryMaxValue, item.rsi!);
-        mSecondaryMinValue = min(mSecondaryMinValue, item.rsi!);
-      }
-    } else if (secondaryState == SecondaryState.WR) {
-      mSecondaryMaxValue = 0;
-      mSecondaryMinValue = -100;
-    } else if (secondaryState == SecondaryState.CCI) {
-      if (item.cci != null) {
-        mSecondaryMaxValue = max(mSecondaryMaxValue, item.cci!);
-        mSecondaryMinValue = min(mSecondaryMinValue, item.cci!);
-      }
-    } else {
-      mSecondaryMaxValue = 0;
-      mSecondaryMinValue = 0;
+    /// convert to switch case
+    switch(secondaryState) {
+      case SecondaryState.MACD:
+        if (item.macd != null) {
+          mSecondaryMaxValue =
+              max(mSecondaryMaxValue, max(item.macd!, max(item.dif!, item.dea!)));
+          mSecondaryMinValue =
+              min(mSecondaryMinValue, min(item.macd!, min(item.dif!, item.dea!)));
+        }break;
+      case SecondaryState.KDJ:
+        if (item.d != null) {
+          mSecondaryMaxValue =
+              max(mSecondaryMaxValue, max(item.k!, max(item.d!, item.j!)));
+          mSecondaryMinValue =
+              min(mSecondaryMinValue, min(item.k!, min(item.d!, item.j!)));
+        }break;
+      case SecondaryState.RSI:
+        if (item.rsi != null) {
+          mSecondaryMaxValue = max(mSecondaryMaxValue, item.rsi!);
+          mSecondaryMinValue = min(mSecondaryMinValue, item.rsi!);
+        }break;
+      case SecondaryState.WR:
+        mSecondaryMaxValue = 0;
+        mSecondaryMinValue = -100;
+        break;
+      case SecondaryState.CCI:
+        if (item.cci != null) {
+          mSecondaryMaxValue = max(mSecondaryMaxValue, item.cci!);
+          mSecondaryMinValue = min(mSecondaryMinValue, item.cci!);
+        }
+        break;
+      case SecondaryState.OBV:
+        if (item.obv != null) {
+          mSecondaryMaxValue = max(mSecondaryMaxValue, item.obv!);
+          mSecondaryMinValue = min(mSecondaryMinValue, item.obv!);
+        }
+        break;
+      case SecondaryState.NONE:
+        mSecondaryMaxValue = 0;
+        mSecondaryMinValue = 0;
+        break;
     }
   }
 

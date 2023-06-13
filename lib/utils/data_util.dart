@@ -5,8 +5,8 @@ import '../entity/index.dart';
 class DataUtil {
   static calculate(
     List<KLineEntity> dataList, {
-    List<int> maDayList = const [5, 10, 20],
-    List<int> emaDayList = const [7, 14, 28],
+    List<int> maDayList = const [5, 10, 30],
+    List<int> emaDayList = const [5, 10, 30],
     int n = 20,
     k = 2,
   }) {
@@ -20,6 +20,7 @@ class DataUtil {
     calcRSI(dataList);
     calcWR(dataList);
     calcCCI(dataList);
+    calcOBV(dataList);
   }
 
   static calcMA(List<KLineEntity> dataList, List<int> maDayList) {
@@ -368,6 +369,27 @@ class DataUtil {
       kline.cci = ((tp - ma) / 0.015 / md);
       if (kline.cci!.isNaN) {
         kline.cci = 0.0;
+      }
+    }
+  }
+
+  static void calcOBV(List<KLineEntity> dataList) {
+
+    if (dataList.isNotEmpty) {
+      /// 标准计算方式
+      dataList[0].obv = dataList[0].vol;
+      /// binance 计算方式
+      // dataList[0].obv = 0;
+    }
+    for (int i = 1; i < dataList.length; i++) {
+      var curEntity = dataList[i];
+      var preEntity = dataList[i-1];
+      if (curEntity.close > preEntity.close) {
+        curEntity.obv = (preEntity.obv ?? 0) + curEntity.vol;
+      } else if (curEntity.close < preEntity.close) {
+        curEntity.obv = (preEntity.obv??0) - curEntity.vol;
+      } else {
+        curEntity.obv = preEntity.obv;
       }
     }
   }

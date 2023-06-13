@@ -38,6 +38,9 @@ abstract class BaseChartRenderer<T> {
 
   double getY(double y) => (maxValue - y) * scaleY + chartRect.top;
 
+  double getObvY(double maxValue, double y) =>
+      (maxValue - y) * scaleY + chartRect.top;
+
   String format(double? n) {
     if (n == null || n.isNaN) {
       return "0.00";
@@ -63,6 +66,7 @@ abstract class BaseChartRenderer<T> {
     //("lasePrice==" + lastPrice.toString() + "==curPrice==" + curPrice.toString());
     double lastY = getY(lastPrice);
     double curY = getY(curPrice);
+    if (lastY.isNaN || curY.isNaN || lastX.isNaN || curX.isNaN) return;
     //print("lastX-----==" + lastX.toString() + "==lastY==" + lastY.toString() + "==curX==" + curX.toString() + "==curY==" + curY.toString());
     canvas.drawLine(
         Offset(lastX, lastY), Offset(curX, curY), chartPaint..color = color);
