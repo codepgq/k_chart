@@ -5,10 +5,7 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:example/main.dart';
 
 void main() {
   testWidgets('TEST EMA', (WidgetTester tester) async {
@@ -18,7 +15,13 @@ void main() {
     // List<double> closingPrices = [25636.00, 25658.01, 25698.00, 25681.00, 25683.00, ];
 
     //
-    List<double> closingPrices = [27145.8, 27193.3, 16820.9, 16916.4, 17225.8, ];
+    List<double> closingPrices = [
+      27145.8,
+      27193.3,
+      16820.9,
+      16916.4,
+      17225.8,
+    ];
     double ema = closingPrices[0];
     double multiplier = 2 / (closingPrices.length + 1);
 
@@ -34,8 +37,30 @@ void main() {
     // List<double> highPrices = [25.10, 25.20, 25.50, 25.70, 25.80, 25.90, 26.00, 26.20, 26.50, 26.80];
     // List<double> lowPrices = [24.50, 24.60, 24.80, 25.00, 25.10, 25.20, 25.30, 25.50, 25.80, 26.10];
 
-    List<double> highPrices = [27079.25, 27096.64, 27081.45, 25.70, 25.80, 25.90, 26.00, 26.20, 26.50, 26.80];
-    List<double> lowPrices = [27026.97, 27072.17, 27051.11, 25.00, 25.10, 25.20, 25.30, 25.50, 25.80, 26.10];
+    List<double> highPrices = [
+      27079.25,
+      27096.64,
+      27081.45,
+      25.70,
+      25.80,
+      25.90,
+      26.00,
+      26.20,
+      26.50,
+      26.80
+    ];
+    List<double> lowPrices = [
+      27026.97,
+      27072.17,
+      27051.11,
+      25.00,
+      25.10,
+      25.20,
+      25.30,
+      25.50,
+      25.80,
+      26.10
+    ];
     double af = 0.02;
     double sar = lowPrices[0];
     double ep = highPrices[0];
@@ -97,10 +122,13 @@ void main() {
       27026.04,
       27068.75,
       27194.65,
-
     ], [
-30.2449,13.7230,21.9328,74.3906,
-    ]);//0,-13.72,8.20,82.6
+      30.2449,
+      13.7230,
+      21.9328,
+      74.3906,
+    ]); //0,-13.72,8.20,82.6
     print(list);
   });
+
 }

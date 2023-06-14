@@ -9,6 +9,7 @@ class DataUtil {
     List<int> emaDayList = const [5, 10, 30],
     int n = 20,
     k = 2,
+        int stochRsiN = 14,
   }) {
     calcMA(dataList, maDayList);
     calcEMA(dataList, emaDayList);
@@ -18,6 +19,7 @@ class DataUtil {
     calcKDJ(dataList);
     calcMACD(dataList);
     calcRSI(dataList);
+    calcStochRSI(dataList, stochRsiN);
     calcWR(dataList);
     calcCCI(dataList);
     calcOBV(dataList);
@@ -54,6 +56,18 @@ class DataUtil {
         }
       }
     }
+
+    /// [0.0, 0.0, 0.0]
+    /// [0.0, 0.0, 0.0]
+    /// [0.0, 0.0, 0.0]
+    /// [0.0, 0.0, 0.0]
+    /// [35848.18199999999, 0.0, 0.0]
+    /// [37386.83, 0.0, 0.0]
+    /// [38027.768, 0.0, 0.0]
+    /// [39390.258, 0.0, 0.0]
+    /// [41434.21800000001, 0.0, 0.0]
+    /// [42712.79000000001, 39280.486, 0.0]
+    dataList.sublist(0, 10).forEach((element) => print(element.maValueList));
   }
 
   static calcEMA(List<KLineEntity> dataList, List<int> emaDayList) {
@@ -62,34 +76,6 @@ class DataUtil {
       return (closePrice - previousEma) * (2 / (n + 1)) + previousEma;
       // return closePrice* (2 / (n + 1)) + previousEma * (1 - 2 / (n + 1));
     }
-
-    // by bit data
-    // dataList[0].close = 26948.36;
-    // dataList[1].close = 26906.76;
-
-    // dataList[0].close = 26921.28;
-    // dataList[1].close = 26927.22;
-    // dataList[2].close = 26917.82;
-    // dataList[3].close = 26935.23;
-    // dataList[4].close = 26960.63;
-    // dataList[5].close = 26948.36;
-    // dataList[6].close = 26906.76; // 26932.52
-    //
-    // dataList[0].close = 26932.76;
-    // dataList[1].close = 26953.59;
-    // dataList[2].close = 26960.01;
-    // dataList[3].close = 26934.47;
-    // dataList[4].close = 26941.16;
-    // dataList[5].close = 26945.12;
-    // dataList[6].close = 27000.00;
-    // dataList[7].close = 26957.25;
-
-    // dataList[0].close = 16835.8;
-    // dataList[1].close = 16834.5;
-    // dataList[2].close = 16820.9;
-    // dataList[3].close = 16916.4;
-    // dataList[4].close = 17225.8;
-
     if (dataList.isNotEmpty) {
       var lastEma = List<double>.filled(emaDayList.length, dataList[0].close);
       for (int i = 1; i < dataList.length; i++) {
@@ -97,11 +83,12 @@ class DataUtil {
         final closePrice = entity.close;
         entity.emaValueList = List<double>.filled(emaDayList.length, 0);
 
+        // (close price - LastEMA) * (2 / (n + 1)) + LastEMA
+        // if is first, LastEMA is close price
         var ema0 = calcEmaValue(lastEma[0], closePrice, emaDayList[0]);
         var ema1 = calcEmaValue(lastEma[1], closePrice, emaDayList[1]);
         var ema2 = calcEmaValue(lastEma[2], closePrice, emaDayList[2]);
-        // (close price - LastEMA) * (2 / (n + 1)) + LastEMA
-        // if is first, LastEMA is close price
+
         entity.emaValueList![0] = i >= emaDayList[0] - 1 ? ema0 : 0;
         entity.emaValueList![1] = i >= emaDayList[1] - 1 ? ema1 : 0;
         entity.emaValueList![2] = i >= emaDayList[2] - 1 ? ema2 : 0;
@@ -109,8 +96,6 @@ class DataUtil {
         lastEma = [ema0, ema1, ema2];
       }
     }
-
-    // dataList.sublist(0, 20).forEach((e) => print(e.emaValueList));
   }
 
   static calcSAR(List<KLineEntity> dataList) {
@@ -378,7 +363,7 @@ class DataUtil {
     if (dataList.isNotEmpty) {
       /// 标准计算方式
       dataList[0].obv = dataList[0].vol;
-      /// binance 计算方式
+      /// binance 计算方式d
       // dataList[0].obv = 0;
     }
     for (int i = 1; i < dataList.length; i++) {
@@ -392,5 +377,52 @@ class DataUtil {
         curEntity.obv = preEntity.obv;
       }
     }
+  }
+
+  /// 计算 StochRSI 14,3,3
+  static void calcStochRSI(List<KLineEntity> dataList, int stochRsiN) {
+    if (dataList.length < stochRsiN) {
+      return;
+    }
+
+
+    /// 如果还没有计算过RSI，先计算RSI
+    if (dataList[0].rsi == null) {
+      calcRSI(dataList);
+    }
+
+    // Stoch RSI = (Current RSI - Lowest RSI)/(Highest RSI - Lowest RSI)
+
+    double lowestRSI = double.maxFinite;
+    double highestRSI = double.minPositive;
+    double sum = 0.0;
+    for (int i = 0; i < dataList.length; i++) {
+      KLineEntity entity = dataList[i];
+      if (entity.rsi != null) {
+        lowestRSI = min(lowestRSI, entity.rsi!);
+        highestRSI = max(highestRSI, entity.rsi!);
+
+        if (i >= stochRsiN) {
+          entity.stochRsi = (entity.rsi! - lowestRSI) / (highestRSI - lowestRSI) * 100;
+          sum += entity.stochRsi!;
+          if (i > (stochRsiN + 3)) {
+            sum -= dataList[i - 3].stochRsi!;
+          }
+          entity.maStochRsi = sum / 3;
+          /// 优化从0开始的问题
+          if (i == stochRsiN && entity.stochRsi == 0) {
+            entity.stochRsi = null;
+            entity.maStochRsi = null;
+          }
+        }
+      }
+    }
+
+
+    for (var value in dataList.sublist(13, 13 + 10)) {
+      print("rsi:${value.rsi} stochRsi:${value.stochRsi} maStochRsi:${value.maStochRsi}");
+    }
+
+
   }
 }

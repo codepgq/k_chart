@@ -168,6 +168,8 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () => _secondaryState = SecondaryState.CCI),
         button("Secondary Chart:OBV",
             onPressed: () => _secondaryState = SecondaryState.OBV),
+        button("Secondary Chart:StochRSI",
+            onPressed: () => _secondaryState = SecondaryState.StochRSI),
         button("Secondary Chart:Hide",
             onPressed: () => _secondaryState = SecondaryState.NONE),
         button(_volHidden ? "Show Vol" : "Hide Vol",
@@ -231,8 +233,8 @@ class _MyHomePageState extends State<MyHomePage> {
     /*
      * 可以翻墙使用方法1加载数据，不可以翻墙使用方法2加载数据，默认使用方法1加载最新数据
      */
-    final Future<String> future = getChatDataFromInternet(period);
-    // final Future<String> future = getChatDataFromJson();
+    // final Future<String> future = getChatDataFromInternet(period);
+    final Future<String> future = getChatDataFromJson();
     future.then((String result) {
       solveChatData(result);
     }).catchError((_) {

@@ -63,6 +63,13 @@ class SecondaryRenderer extends BaseChartRenderer<MACDEntity> {
         drawLine(lastPoint.obv, curPoint.obv, canvas, lastX, curX,
             this.chartColors.rsiColor);
         break;
+      case SecondaryState.StochRSI:
+        drawLine(lastPoint.stochRsi, curPoint.stochRsi, canvas, lastX, curX,
+            this.chartColors.rsiColor);
+
+        drawLine(lastPoint.maStochRsi, curPoint.maStochRsi, canvas, lastX, curX,
+            this.chartColors.ma10Color);
+        break;
       case SecondaryState.NONE:
         break;
     }
@@ -158,6 +165,17 @@ class SecondaryRenderer extends BaseChartRenderer<MACDEntity> {
         children = [
           TextSpan(
               text: "OBV:${NumberUtil.format(data.obv!)}    ",
+              style: getTextStyle(this.chartColors.rsiColor)),
+        ];
+        break;
+        case SecondaryState.StochRSI:
+        children = [
+          TextSpan(
+              text: "STOCHRSI:${NumberUtil.format(data.stochRsi ?? 0)}    ",
+              style: getTextStyle(this.chartColors.rsiColor)),
+
+          TextSpan(
+              text: "MASTOCHRSI:${NumberUtil.format(data.maStochRsi ?? 0)}    ",
               style: getTextStyle(this.chartColors.rsiColor)),
         ];
         break;
