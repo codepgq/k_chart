@@ -294,8 +294,8 @@ abstract class BaseChartPainter extends CustomPainter {
         break;
         case SecondaryState.StochRSI:
         if (item.stochRsi != null) {
-          mSecondaryMaxValue = max(mSecondaryMaxValue, item.stochRsi!);
-          mSecondaryMinValue = min(mSecondaryMinValue, item.stochRsi!);
+          mSecondaryMaxValue = max(mSecondaryMaxValue, max(item.stochRsi!, item.maStochRsi!));
+          mSecondaryMinValue = min(mSecondaryMinValue, min(item.stochRsi!, item.maStochRsi!));
         }
         break;
       case SecondaryState.NONE:
