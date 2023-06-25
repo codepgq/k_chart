@@ -67,7 +67,7 @@ class DataUtil {
     /// [39390.258, 0.0, 0.0]
     /// [41434.21800000001, 0.0, 0.0]
     /// [42712.79000000001, 39280.486, 0.0]
-    dataList.sublist(0, 10).forEach((element) => print(element.maValueList));
+    // dataList.sublist(0, 10).forEach((element) => print(element.maValueList));
   }
 
   static calcEMA(List<KLineEntity> dataList, List<int> emaDayList) {
@@ -419,9 +419,9 @@ class DataUtil {
     }
 
 
-    for (var value in dataList.sublist(13, 13 + 10)) {
-      print("rsi:${value.rsi} stochRsi:${value.stochRsi} maStochRsi:${value.maStochRsi}");
-    }
+    // for (var value in dataList.sublist(13, 13 + 10)) {
+    //   print("rsi:${value.rsi} stochRsi:${value.stochRsi} maStochRsi:${value.maStochRsi}");
+    // }
 
 
   }

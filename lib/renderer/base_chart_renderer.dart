@@ -38,9 +38,6 @@ abstract class BaseChartRenderer<T> {
 
   double getY(double y) => (maxValue - y) * scaleY + chartRect.top;
 
-  double getObvY(double maxValue, double y) =>
-      (maxValue - y) * scaleY + chartRect.top;
-
   String format(double? n) {
     if (n == null || n.isNaN) {
       return "0.00";
