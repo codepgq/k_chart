@@ -310,20 +310,30 @@ class MainRenderer extends BaseChartRenderer<CandleEntity> {
         open = close + mCandleLineWidth;
       }
       chartPaint.color = this.chartColors.upColor;
-      canvas.drawRect(
-          Rect.fromLTRB(curX - r, close, curX + r, open), chartPaint);
-      canvas.drawRect(
-          Rect.fromLTRB(curX - lineR, high, curX + lineR, low), chartPaint);
+      // canvas.drawRect(
+      //     Rect.fromLTRB(curX - r, close, curX + r, open), chartPaint);
+      // canvas.drawRect(
+      //     Rect.fromLTRB(curX - lineR, high, curX + lineR, low), chartPaint);
+
+      canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTRB(curX - r, close, curX + r, open), Radius.circular(2)), chartPaint);
+      canvas.drawRRect(
+          RRect.fromRectAndRadius(Rect.fromLTRB(curX - lineR, high, curX + lineR, low), Radius.circular(2)), chartPaint);
+
     } else if (close > open) {
       // 实体高度>= CandleLineWidth
       if (close - open < mCandleLineWidth) {
         open = close - mCandleLineWidth;
       }
       chartPaint.color = this.chartColors.dnColor;
-      canvas.drawRect(
-          Rect.fromLTRB(curX - r, open, curX + r, close), chartPaint);
-      canvas.drawRect(
-          Rect.fromLTRB(curX - lineR, high, curX + lineR, low), chartPaint);
+      // canvas.drawRect(
+      //     Rect.fromLTRB(curX - r, open, curX + r, close), chartPaint);
+      // canvas.drawRect(
+      //     Rect.fromLTRB(curX - lineR, high, curX + lineR, low), chartPaint);
+
+      canvas.drawRRect(
+          RRect.fromRectAndRadius(Rect.fromLTRB(curX - r, open, curX + r, close),Radius.circular(2)), chartPaint);
+      canvas.drawRRect(
+      RRect.fromRectAndRadius(Rect.fromLTRB(curX - lineR, high, curX + lineR, low),Radius.circular(2)), chartPaint);
     }
   }
 

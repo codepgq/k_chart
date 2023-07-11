@@ -11,12 +11,13 @@ class VolRenderer extends BaseChartRenderer<VolumeEntity> {
   VolRenderer(Rect mainRect, double maxValue, double minValue,
       double topPadding, int fixedLength, this.chartStyle, this.chartColors)
       : super(
-            chartRect: mainRect,
-            maxValue: maxValue,
-            minValue: minValue,
-            topPadding: topPadding,
-            fixedLength: fixedLength,
-            gridColor: chartColors.gridColor,) {
+          chartRect: mainRect,
+          maxValue: maxValue,
+          minValue: minValue,
+          topPadding: topPadding,
+          fixedLength: fixedLength,
+          gridColor: chartColors.gridColor,
+        ) {
     mVolWidth = this.chartStyle.volWidth;
   }
 
@@ -27,8 +28,19 @@ class VolRenderer extends BaseChartRenderer<VolumeEntity> {
     double top = getVolY(curPoint.vol);
     double bottom = chartRect.bottom;
     if (curPoint.vol != 0) {
-      canvas.drawRect(
-          Rect.fromLTRB(curX - r, top, curX + r, bottom),
+      // canvas.drawRect(
+      //     Rect.fromLTRB(curX - r, top, curX + r, bottom),
+      //     chartPaint
+      //       ..color = curPoint.close > curPoint.open
+      //           ? this.chartColors.upColor
+      //           : this.chartColors.dnColor);
+
+      canvas.drawRRect(
+          RRect.fromRectAndCorners(
+            Rect.fromLTRB(curX - r, top, curX + r, bottom),
+            topLeft: Radius.circular(r),
+            topRight: Radius.circular(r),
+          ),
           chartPaint
             ..color = curPoint.close > curPoint.open
                 ? this.chartColors.upColor
