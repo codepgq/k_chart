@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool isChangeUI = false;
   bool _isTrendLine = false;
   bool _priceLeft = true;
-  VerticalTextAlignment _verticalTextAlignment = VerticalTextAlignment.left;
+  VerticalTextAlignment _verticalTextAlignment = VerticalTextAlignment.right;
 
   ChartStyle chartStyle = ChartStyle();
   ChartColors chartColors = ChartColors();
