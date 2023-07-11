@@ -11,6 +11,8 @@ class ChartColors {
   Color ma30Color = Color(0xff9979C6);
   Color upColor = Color(0xff4DAA90);
   Color dnColor = Color(0xffC15466);
+  Color volUpColor = Color(0xff4DAA90);
+  Color volDnColor = Color(0xffC15466);
   Color volColor = Color(0xff4729AE);
 
   Color macdColor = Color(0xff4729AE);

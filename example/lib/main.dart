@@ -47,7 +47,9 @@ class _MyHomePageState extends State<MyHomePage> {
   VerticalTextAlignment _verticalTextAlignment = VerticalTextAlignment.right;
 
   ChartStyle chartStyle = ChartStyle();
-  ChartColors chartColors = ChartColors();
+  ChartColors chartColors = ChartColors()
+  ..volDnColor = Colors.blue
+  ..volUpColor = Colors.orange;
 
   @override
   void initState() {
