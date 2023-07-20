@@ -405,7 +405,7 @@ class DataUtil {
         if (i >= stochRsiN) {
           entity.stochRsi = (entity.rsi! - lowestRSI) / (highestRSI - lowestRSI) * 100;
           sum += entity.stochRsi!;
-          if (i > (stochRsiN + 3)) {
+          if (i > (stochRsiN + 3) && dataList[i - 3].stochRsi != null) {
             sum -= dataList[i - 3].stochRsi!;
           }
           entity.maStochRsi = sum / 3;
